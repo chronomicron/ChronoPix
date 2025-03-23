@@ -40,38 +40,7 @@
        <item>
         <widget class="QPushButton" name="pauseButton">
          <property name="text">
-          <string>Pause</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCalendarWidget" name="calendarWidget"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-
-    <!-- Center Panel: Local Library -->
-    <item>
-     <widget class="QFrame" name="localLibraryPanel">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <layout class="QVBoxLayout" name="libraryLayout">
-       <item>
-        <widget class="QLabel" name="libraryLabel">
-         <property name="text">
-          <string>Local Library</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="imageListView"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="imageMetadataLabel">
-         <property name="text">
-          <string>Image Metadata</string>
+          <string>Pause Scan</string>
          </property>
         </widget>
        </item>
@@ -79,7 +48,7 @@
      </widget>
     </item>
 
-    <!-- Right Panel: Volume Hierarchy & Info -->
+    <!-- Center Panel: Volume Hierarchy -->
     <item>
      <widget class="QFrame" name="volumeHierarchyPanel">
       <property name="frameShape">
@@ -96,13 +65,28 @@
        <item>
         <widget class="QTreeView" name="volumeTreeView"/>
        </item>
+      </layout>
+     </widget>
+    </item>
+
+    <!-- Right Panel: Information Output -->
+    <item>
+     <widget class="QFrame" name="infoPanel">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <layout class="QVBoxLayout" name="infoLayout">
+       
+       <!-- Selected Path Display -->
        <item>
-        <widget class="QLabel" name="progressLabel">
+        <widget class="QLabel" name="selectedPathLabel">
          <property name="text">
-          <string>Scanning Progress:</string>
+          <string>Selected Path: </string>
          </property>
         </widget>
        </item>
+
+       <!-- Progress Bar -->
        <item>
         <widget class="QProgressBar" name="progressBar">
          <property name="minimum">
@@ -111,8 +95,21 @@
          <property name="maximum">
           <number>100</number>
          </property>
+         <property name="value">
+          <number>0</number>
+         </property>
         </widget>
        </item>
+
+       <!-- Status Output Terminal -->
+       <item>
+        <widget class="QTextEdit" name="statusOutput">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+
       </layout>
      </widget>
     </item>

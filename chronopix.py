@@ -1,101 +1,91 @@
 import sys
-import time
-import threading
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
-from PyQt6.QtCore import QTimer, QDir, QThread, pyqtSignal
-from PyQt6.uic import loadUi
+import os
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6 import uic
 
-class ScannerThread(QThread):
-    """Thread to handle volume scanning."""
-    progress_signal = pyqtSignal(int)  # Signal to update progress bar
-    finished_signal = pyqtSignal()  # Signal when scanning is done
-
-    def __init__(self, folder_path):
-        super().__init__()
-        self.folder_path = folder_path
-        self.paused = False
-        self.stop_scan = False
-
-    def run(self):
-        """Scans the folder and updates progress."""
-        file_count = self.count_files(self.folder_path)
-        scanned = 0
-
-        for root, dirs, files in QDir(self.folder_path).entryList(QDir.Files | QDir.NoDotAndDotDot, QDir.Name):
-            if self.stop_scan:
-                break  # Stop scanning immediately
-
-            while self.paused:
-                time.sleep(0.1)  # Pause execution
-
-            scanned += 1
-            progress = int((scanned / file_count) * 100)
-            self.progress_signal.emit(progress)
-            time.sleep(0.05)  # Simulate processing time
-
-        self.finished_signal.emit()
-
-    def count_files(self, folder):
-        """Counts all files in the directory tree for progress tracking."""
-        file_count = 0
-        for _, _, files in QDir(folder).entryList(QDir.Files | QDir.NoDotAndDotDot):
-            file_count += len(files)
-        return max(file_count, 1)  # Avoid division by zero
-
-    def pause(self):
-        """Pauses the scanning process."""
-        self.paused = not self.paused  # Toggle pause state
-
-    def stop(self):
-        """Stops scanning entirely."""
-        self.stop_scan = True
-
+# Load the UI
 class ChronoPix(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi("chronopix.ui", self)
-
-        self.scanner_thread = None  # Initialize scanning thread variable
+        uic.loadUi("chronopix.ui", self)
 
         # Connect buttons to functions
+        self.selectFolderButton.clicked.connect(self.select_folder)
         self.scanButton.clicked.connect(self.start_scan)
         self.pauseButton.clicked.connect(self.pause_scan)
-        self.selectFolderButton.clicked.connect(self.select_folder)
 
-        self.selected_folder = None
+        # Initialize scan-related variables
+        self.scan_thread = None
+        self.scan_paused = False
+        self.selected_path = ""
 
     def select_folder(self):
-        """Opens a file dialog to select a folder."""
+        """Opens a dialog to select a folder and updates the UI."""
         folder = QFileDialog.getExistingDirectory(self, "Select Folder")
         if folder:
-            self.selected_folder = folder
+            self.selected_path = folder
+            self.selectedPathLabel.setText(f"Selected Path: {folder}")
+            self.log_status(f"Selected folder: {folder}")
 
     def start_scan(self):
-        """Starts scanning the selected volume."""
-        if not self.selected_folder:
-            print("No folder selected.")  # Later replace with a message box
+        """Starts the scanning process in a separate thread."""
+        if not self.selected_path:
+            QMessageBox.warning(self, "Warning", "Please select a folder first!")
             return
 
-        self.scanner_thread = ScannerThread(self.selected_folder)
-        self.scanner_thread.progress_signal.connect(self.update_progress)
-        self.scanner_thread.finished_signal.connect(self.scan_complete)
-
-        self.progressBar.setValue(0)  # Reset progress
-        self.scanner_thread.start()
+        self.log_status("Starting scan...")
+        self.scan_thread = ScanThread(self.selected_path)
+        self.scan_thread.progress_signal.connect(self.update_progress)
+        self.scan_thread.status_signal.connect(self.log_status)
+        self.scan_thread.start()
 
     def pause_scan(self):
-        """Pauses the scanning process."""
-        if self.scanner_thread:
-            self.scanner_thread.pause()
+        """Pauses or resumes the scanning process."""
+        if self.scan_thread and self.scan_thread.isRunning():
+            self.scan_paused = not self.scan_paused
+            self.scan_thread.paused = self.scan_paused
+            status = "paused" if self.scan_paused else "resumed"
+            self.log_status(f"Scan {status}.")
 
     def update_progress(self, value):
         """Updates the progress bar."""
         self.progressBar.setValue(value)
 
-    def scan_complete(self):
-        """Handles completion of the scan."""
-        print("Scanning Complete!")  # Later replace with a UI message
+    def log_status(self, message):
+        """Logs status messages to the output display."""
+        self.statusOutput.append(message)
 
+# Background Thread for Scanning
+class ScanThread(QThread):
+    progress_signal = pyqtSignal(int)
+    status_signal = pyqtSignal(str)
+
+    def __init__(self, root_folder):
+        super().__init__()
+        self.root_folder = root_folder
+        self.paused = False
+
+    def run(self):
+        """Scans the selected folder recursively, finding images."""
+        image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"}
+        total_files = sum(len(files) for _, _, files in os.walk(self.root_folder))
+        scanned_files = 0
+
+        for root, _, files in os.walk(self.root_folder):
+            for file in files:
+                while self.paused:
+                    self.msleep(500)  # Pause check
+
+                scanned_files += 1
+                file_path = os.path.join(root, file)
+                if os.path.splitext(file)[1].lower() in image_extensions:
+                    self.status_signal.emit(f"Found image: {file_path}")
+
+                progress = int((scanned_files / total_files) * 100) if total_files > 0 else 0
+                self.progress_signal.emit(progress)
+
+# Run the application
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = ChronoPix()
