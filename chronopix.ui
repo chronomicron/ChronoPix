@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ChronoPix</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    
+    <!-- Top Control Bar -->
+    <item>
+     <widget class="QFrame" name="topControlBar">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <layout class="QHBoxLayout" name="topLayout">
+       <item>
+        <widget class="QPushButton" name="scanButton">
+         <property name="text">
+          <string>Scan Volume</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="refreshButton">
+         <property name="text">
+          <string>Refresh</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <!-- Bottom Section: Three Panels -->
+    <item>
+     <widget class="QFrame" name="bottomSection">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <layout class="QHBoxLayout" name="bottomLayout">
+
+       <!-- Left Panel: Controls -->
+       <item>
+        <widget class="QFrame" name="controlPanel">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <layout class="QVBoxLayout" name="controlLayout">
+          <item>
+           <widget class="QPushButton" name="openFolderButton">
+            <property name="text">
+             <string>Open Folder</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="startScanButton">
+            <property name="text">
+             <string>Start Scan</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Middle Panel: Volume Hierarchy -->
+       <item>
+        <widget class="QFrame" name="volumeHierarchyPanel">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <layout class="QVBoxLayout" name="hierarchyLayout">
+          <item>
+           <widget class="QLabel" name="hierarchyLabel">
+            <property name="text">
+             <string>Volume Hierarchy</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTreeView" name="volumeTreeView"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Right Panel: Information Output -->
+       <item>
+        <widget class="QFrame" name="infoOutputPanel">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <layout class="QVBoxLayout" name="infoLayout">
+          <item>
+           <widget class="QLabel" name="infoLabel">
+            <property name="text">
+             <string>Information Output</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="infoText"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+      </layout>
+     </widget>
+    </item>
+
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
