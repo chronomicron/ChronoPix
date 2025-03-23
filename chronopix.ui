@@ -14,26 +14,64 @@
    <string>ChronoPix</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    
-    <!-- Top Control Bar -->
+   <layout class="QHBoxLayout" name="horizontalLayout">
+
+    <!-- Left Panel: Control Panel -->
     <item>
-     <widget class="QFrame" name="topControlBar">
+     <widget class="QFrame" name="controlPanel">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
-      <layout class="QHBoxLayout" name="topLayout">
+      <layout class="QVBoxLayout" name="controlLayout">
        <item>
-        <widget class="QPushButton" name="scanButton">
+        <widget class="QPushButton" name="selectFolderButton">
          <property name="text">
-          <string>Scan Volume</string>
+          <string>Select Folder</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="refreshButton">
+        <widget class="QPushButton" name="scanButton">
          <property name="text">
-          <string>Refresh</string>
+          <string>Scan for Images</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pauseButton">
+         <property name="text">
+          <string>Pause</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCalendarWidget" name="calendarWidget"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <!-- Center Panel: Local Library -->
+    <item>
+     <widget class="QFrame" name="localLibraryPanel">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <layout class="QVBoxLayout" name="libraryLayout">
+       <item>
+        <widget class="QLabel" name="libraryLabel">
+         <property name="text">
+          <string>Local Library</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListView" name="imageListView"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="imageMetadataLabel">
+         <property name="text">
+          <string>Image Metadata</string>
          </property>
         </widget>
        </item>
@@ -41,81 +79,40 @@
      </widget>
     </item>
 
-    <!-- Bottom Section: Three Panels -->
+    <!-- Right Panel: Volume Hierarchy & Info -->
     <item>
-     <widget class="QFrame" name="bottomSection">
+     <widget class="QFrame" name="volumeHierarchyPanel">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
-      <layout class="QHBoxLayout" name="bottomLayout">
-
-       <!-- Left Panel: Controls -->
+      <layout class="QVBoxLayout" name="hierarchyLayout">
        <item>
-        <widget class="QFrame" name="controlPanel">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+        <widget class="QLabel" name="hierarchyLabel">
+         <property name="text">
+          <string>Volume Hierarchy</string>
          </property>
-         <layout class="QVBoxLayout" name="controlLayout">
-          <item>
-           <widget class="QPushButton" name="openFolderButton">
-            <property name="text">
-             <string>Open Folder</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="startScanButton">
-            <property name="text">
-             <string>Start Scan</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
-
-       <!-- Middle Panel: Volume Hierarchy -->
        <item>
-        <widget class="QFrame" name="volumeHierarchyPanel">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+        <widget class="QTreeView" name="volumeTreeView"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="progressLabel">
+         <property name="text">
+          <string>Scanning Progress:</string>
          </property>
-         <layout class="QVBoxLayout" name="hierarchyLayout">
-          <item>
-           <widget class="QLabel" name="hierarchyLabel">
-            <property name="text">
-             <string>Volume Hierarchy</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTreeView" name="volumeTreeView"/>
-          </item>
-         </layout>
         </widget>
        </item>
-
-       <!-- Right Panel: Information Output -->
        <item>
-        <widget class="QFrame" name="infoOutputPanel">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+        <widget class="QProgressBar" name="progressBar">
+         <property name="minimum">
+          <number>0</number>
          </property>
-         <layout class="QVBoxLayout" name="infoLayout">
-          <item>
-           <widget class="QLabel" name="infoLabel">
-            <property name="text">
-             <string>Information Output</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTextEdit" name="infoText"/>
-          </item>
-         </layout>
+         <property name="maximum">
+          <number>100</number>
+         </property>
         </widget>
        </item>
-
       </layout>
      </widget>
     </item>
